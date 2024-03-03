@@ -11,7 +11,7 @@ router.post("/register", async (req, res) => {
   const user = await UserModel.findOne({ username });
 
   if (user) {
-    return res.json({ message: "User already exists!" });
+    return res.status(400).json({ message: "User already exists!" });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,19 +20,22 @@ router.post("/register", async (req, res) => {
   await newUser.save();
   res.json({ message: "User Register Successfully!" });
 });
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   const user = await UserModel.findOne({ username });
 
   if (!user) {
-    return res.json({ message: "Users doesn't exist!" });
+    return res.status(400).json({ message: "Users doesn't exist!" });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    return res.json({ message: "Username or Password is Incorrect!" });
+    return res
+      .status(400)
+      .json({ message: "Username or Password is Incorrect!" });
   }
 
   const token = jwt.sign({ is: user._id }, "secret");
@@ -40,3 +43,17 @@ router.post("/login", async (req, res) => {
 });
 
 export { router as userRouter };
+
+export const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    jwt.verify(authHeader, "secret", (err) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};

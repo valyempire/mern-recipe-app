@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
 import { userRouter } from "./routes/users.js";
 import { recipesRouter } from "./routes/recipes.js";
 
@@ -15,10 +14,14 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+// app.options("*", cors());
 
 app.use("/auth", userRouter);
 app.use("/recipes", recipesRouter);
 
-mongoose.connect(secretKey);
+mongoose.connect(secretKey, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.listen(3001, () => console.log("yeeee working"));

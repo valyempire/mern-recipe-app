@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 
 export const CreateRecipe = () => {
   const userID = useGetUserID();
+
   const [cookies, _] = useCookies(["access_token"]);
   const [recipe, setRecipe] = useState({
     name: "",
@@ -25,33 +26,28 @@ export const CreateRecipe = () => {
     setRecipe({ ...recipe, [name]: value });
   };
 
-  const handleIngredientChange = (event, index) => {
+  const handleIngredientChange = (event, idx) => {
     const { value } = event.target;
     const ingredients = [...recipe.ingredients];
-    ingredients[index] = value;
+    ingredients[idx] = value;
     setRecipe({ ...recipe, ingredients });
   };
 
   const handleAddIngredient = () => {
-    const ingredients = [...recipe.ingredients, ""];
-    setRecipe({ ...recipe, ingredients });
+    setRecipe({ ...recipe, ingredients: [...recipe.ingredients, ""] });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post(
-        "http://localhost:3001/recipes",
-        { ...recipe },
-        {
-          headers: { authorization: cookies.access_token },
-        }
-      );
+      await axios.post("http://localhost:3001/recipes", recipe, {
+        headers: { authorization: cookies.access_token },
+      });
 
       alert("Recipe Created");
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
