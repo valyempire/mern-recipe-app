@@ -55,6 +55,21 @@ export const Home = () => {
     }
   };
 
+  const deleteRecipe = async (recipeID) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/recipes/${recipeID}`,
+        {
+          headers: { authorization: cookies.access_token },
+        }
+      );
+      // Actualizăm lista de rețete după ștergerea rețetei
+      setRecipes(recipes.filter((recipe) => recipe._id !== recipeID));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const isRecipeSaved = (id) => savedRecipes.includes(id);
 
   return (
@@ -71,6 +86,7 @@ export const Home = () => {
               >
                 {isRecipeSaved(recipe._id) ? "Saved" : "Save"}
               </button>
+              <button onClick={() => deleteRecipe(recipe._id)}>Delete</button>
             </div>
             <div className="instructions">
               <p>{recipe.instructions}</p>

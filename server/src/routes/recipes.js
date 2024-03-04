@@ -61,4 +61,19 @@ router.get("/savedRecipes/:userID", async (req, res) => {
   }
 });
 
+router.delete("/:recipeID", verifyToken, async (req, res) => {
+  try {
+    const deletedRecipe = await RecipeModel.findByIdAndDelete(
+      req.params.recipeID
+    );
+    if (!deletedRecipe) {
+      return res.status(404).json({ message: "Rețeta nu a fost găsită." });
+    }
+    res.status(200).json({ message: "Rețeta a fost ștearsă cu succes." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Eroare internă a serverului." });
+  }
+});
+
 export { router as recipesRouter };
