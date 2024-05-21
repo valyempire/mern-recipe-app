@@ -23,19 +23,19 @@ export const Register = () => {
       <form onSubmit={handleSubmit}>
         <h2>Register</h2>
         <div className="form-group">
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="register-username">Username:</label>
           <input
             type="text"
-            id="username"
+            id="register-username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="register-password">Password:</label>
           <input
             type="password"
-            id="password"
+            id="register-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
